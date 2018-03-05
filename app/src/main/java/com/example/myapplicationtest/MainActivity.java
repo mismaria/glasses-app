@@ -403,10 +403,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public void updatestring(String updatedText){
-        TextView tv = (TextView) findViewById(R.id.textView2);
-        tv.setVisibility(View.VISIBLE);
-        tv.setText(updatedText);
 
-    }
 }

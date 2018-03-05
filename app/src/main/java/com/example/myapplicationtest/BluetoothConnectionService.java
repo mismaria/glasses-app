@@ -10,7 +10,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -222,7 +221,6 @@ public class BluetoothConnectionService {
 
     String incomingMessage;
     private class ConnectedThread extends Thread {
-        Handler handler = new Handler();
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
@@ -265,13 +263,13 @@ public class BluetoothConnectionService {
                     bytes = mmInStream.read(buffer);
                     incomingMessage = new String(buffer, 0, bytes);
                     Log.i(TAG, "InputStream: " + incomingMessage);
-                    handler.post(new Runnable() {
-                        @Override
+                    final TextView tv =  ((MainActivity)mContext).findViewById(R.id.textView2);
+                    tv.post(new Runnable() {
                         public void run() {
-                            ((MainActivity)mContext).updatestring(incomingMessage);
+                            tv.setVisibility(View.VISIBLE);
+                            tv.setText(incomingMessage);
                         }
                     });
-
 
                 } catch (IOException e) {
                     Log.e(TAG, "write: Error reading Input Stream. " + e.getMessage() );
