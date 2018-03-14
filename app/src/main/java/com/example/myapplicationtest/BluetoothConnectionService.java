@@ -263,13 +263,32 @@ public class BluetoothConnectionService {
                     bytes = mmInStream.read(buffer);
                     incomingMessage = new String(buffer, 0, bytes);
                     Log.i(TAG, "InputStream: " + incomingMessage);
-                    final TextView tv =  ((MainActivity)mContext).findViewById(R.id.textView2);
-                    tv.post(new Runnable() {
-                        public void run() {
-                            tv.setVisibility(View.VISIBLE);
-                            tv.setText(incomingMessage);
-                        }
-                    });
+                    final TextView tv_word =  ((MainActivity)mContext).findViewById(R.id.textView);
+                    final TextView tv_def =  ((MainActivity)mContext).findViewById(R.id.textView2);
+                    final String[] word_def = incomingMessage.split(":");
+                    if (word_def[0].equals("word")) {
+                        tv_word.post(new Runnable() {
+                            public void run() {
+                                tv_word.setVisibility(View.VISIBLE);
+                                tv_word.setText(word_def[1]);
+                            }
+                        });
+                        tv_def.post(new Runnable() {
+                            public void run() {
+                                tv_def.setVisibility(View.VISIBLE);
+                                tv_def.setText("");
+                            }
+                        });
+                    }
+                    else{
+                        tv_def.post(new Runnable() {
+                            public void run() {
+                                tv_def.setVisibility(View.VISIBLE);
+                                tv_def.setText(word_def[1]);
+                            }
+                        });
+                    }
+
 
                 } catch (IOException e) {
                     Log.e(TAG, "write: Error reading Input Stream. " + e.getMessage() );
