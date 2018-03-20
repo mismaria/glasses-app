@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button btnSend;
     Button btnSession;
     Button btnONOFF;
-    Button btnFindUnpairedDevices;
     EditText etSend;
 
     private static final UUID MY_UUID_INSECURE =
@@ -210,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //btnSend = (Button) findViewById(R.id.btnSend);
         //etSend = (EditText) findViewById(R.id.editText);
         btnSession = (Button) findViewById(R.id.button2);
-        btnFindUnpairedDevices = (Button) findViewById(R.id.btnFindUnpairedDevices);
 
         //Broadcasts when bond state changes (ie:pairing)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -230,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 btnONOFF.setVisibility(View.INVISIBLE);
                 btnEnableDisable_Discoverable.setVisibility(View.INVISIBLE);
                 lvNewDevices.setVisibility(View.INVISIBLE);
-                btnFindUnpairedDevices.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -401,6 +398,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             mBTDevice = mBTDevices.get(i);
             mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
         }
+    }
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        //unregisterReceiver(mBroadcastReceiver1);
+        unregisterReceiver(mBroadcastReceiver2);
+        unregisterReceiver(mBroadcastReceiver3);
+        //unregisterReceiver(mBroadcastReceiver4);
+        //mBluetoothAdapter.cancelDiscovery();
     }
 
 

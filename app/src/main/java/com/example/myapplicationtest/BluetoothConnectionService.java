@@ -20,10 +20,6 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-/**
- * Created by User on 12/21/2016.
- */
-
 public class BluetoothConnectionService {
     private static final String TAG = "BluetoothConnectionServ";
 
@@ -165,7 +161,6 @@ public class BluetoothConnectionService {
                 Log.d(TAG, "run: ConnectThread: Could not connect to UUID: " + MY_UUID_INSECURE );
             }
 
-            //will talk about this in the 3rd video
             connected(mmSocket,mmDevice);
         }
         public void cancel() {
@@ -206,7 +201,7 @@ public class BluetoothConnectionService {
     public void startClient(BluetoothDevice device,UUID uuid){
         Log.d(TAG, "startClient: Started.");
 
-        //initprogress dialog
+        //initial progress dialog
         mProgressDialog = ProgressDialog.show(mContext,"Connecting Bluetooth"
                 ,"Please Wait...",true);
 
@@ -260,39 +255,39 @@ public class BluetoothConnectionService {
             while (true) {
                 // Read from the InputStream
                 try {
-                    bytes = mmInStream.read(buffer);
-                    incomingMessage = new String(buffer, 0, bytes);
-                    Log.i(TAG, "InputStream: " + incomingMessage);
-                    final TextView tv_word =  ((MainActivity)mContext).findViewById(R.id.textView);
-                    final TextView tv_def =  ((MainActivity)mContext).findViewById(R.id.textView2);
-                    final String[] word_def = incomingMessage.split(":");
-                    if (word_def[0].equals("word")) {
-                        tv_word.post(new Runnable() {
-                            public void run() {
-                                tv_word.setVisibility(View.VISIBLE);
-                                tv_word.setText(word_def[1]);
-                            }
-                        });
-                        tv_def.post(new Runnable() {
-                            public void run() {
-                                tv_def.setVisibility(View.VISIBLE);
-                                tv_def.setText("");
-                            }
-                        });
+                    if(mmInStream.available() > 0){
+                        bytes = mmInStream.read(buffer);
+                        incomingMessage = new String(buffer, 0, bytes);
+                        Log.i(TAG, "InputStream: " + incomingMessage);
+                        final TextView tv_word =  ((MainActivity)mContext).findViewById(R.id.textView);
+                        final TextView tv_def =  ((MainActivity)mContext).findViewById(R.id.textView2);
+                        final String[] word_def = incomingMessage.split(":");
+                        if (word_def[0].toLowerCase().trim().equals("word")) {
+                            tv_word.post(new Runnable() {
+                                public void run() {
+                                    tv_word.setVisibility(View.VISIBLE);
+                                    tv_word.setText(word_def[1]);
+                                }
+                            });
+                            tv_def.post(new Runnable() {
+                                public void run() {
+                                    tv_def.setVisibility(View.VISIBLE);
+                                    tv_def.setText("");
+                                }
+                            });
+                        }
+                        else{
+                            tv_def.post(new Runnable() {
+                                public void run() {
+                                    tv_def.setVisibility(View.VISIBLE);
+                                    tv_def.setText(word_def[1]);
+                                }
+                            });
+                        }
                     }
-                    else{
-                        tv_def.post(new Runnable() {
-                            public void run() {
-                                tv_def.setVisibility(View.VISIBLE);
-                                tv_def.setText(word_def[1]);
-                            }
-                        });
-                    }
-
-
                 } catch (IOException e) {
-                    Log.e(TAG, "write: Error reading Input Stream. " + e.getMessage() );
-                    break;
+                    e.printStackTrace();
+                    return;
                 }
             }
         }
